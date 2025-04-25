@@ -27,6 +27,8 @@ class DBConnect:
                 )
                 return cls._cnxpool.get_connection()
             except mysql.connector.Error as err:
+                print(f"Errore MySQL: {err}")  # 👈 AGGIUNGI QUESTO
+
                 if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
                     print("Something is wrong with your user name or password")
                     return None

@@ -6,7 +6,7 @@ class View(ft.UserControl):
         super().__init__()
         # page stuff
         self._page = page
-        self._page.title = "Template application using MVC and DAO"
+        self._page.title = "Analizza vendite"
         self._page.horizontal_alignment = 'CENTER'
         self._page.theme_mode = ft.ThemeMode.DARK
         # controller (it is not initialized. Must be initialized in the main, after the controller is created)
@@ -20,25 +20,73 @@ class View(ft.UserControl):
 
     def load_interface(self):
         # title
-        self._title = ft.Text("Hello World", color="blue", size=24)
+        self._title = ft.Text("Analizza vendite", color="blue", size=24)
         self._page.controls.append(self._title)
 
         #ROW with some controls
-        # text field for the name
-        self.txt_name = ft.TextField(
-            label="name",
-            width=200,
-            hint_text="Insert a your name"
+
+        self.dropdown1 = ft.Dropdown(label="Anno",  # Etichetta
+                                     width=400,  # Larghezza in pixel
+                                     height=60,  # Altezza in pixel
+                                     options=[ft.dropdown.Option(key=0, text=" Nessun filtro")],
+                                     hint_text="Seleziona un anno")
+
+        self._controller.populate_dropdown1()
+
+        self.dropdown2 = ft.Dropdown(label="Brand",  # Etichetta
+                                     width=400,  # Larghezza in pixel
+                                     height=60,  # Altezza in pixel
+                                     options=[ft.dropdown.Option(key=0, text=" Nessun filtro")],
+                                     hint_text="Seleziona un brand")
+
+        self._controller.populate_dropdown2()
+
+        self.dropdown3 = ft.Dropdown(label="Retailer",  # Etichetta
+                                     width=400,  # Larghezza in pixel
+                                     height=60,  # Altezza in pixel
+                                     options=[ft.dropdown.Option(key=0, text=" Nessun filtro")],
+                                     hint_text="Seleziona un retailer",
+                                     on_change = self._controller.read_retailer)
+
+        self.bottone1= ft.ElevatedButton(
+            text="Top Vendite",
+            icon=ft.icons.SEARCH,
+            style=ft.ButtonStyle(
+                color=ft.colors.WHITE,
+                bgcolor=ft.colors.BLUE_700,
+                overlay_color=ft.colors.BLUE_900,
+                padding=20,
+                shape=ft.RoundedRectangleBorder(radius=12),
+                elevation=6,
+            ),
+            on_click=self._controller.handle_topVendita
         )
 
-        # button for the "hello" reply
-        self.btn_hello = ft.ElevatedButton(text="Hello", on_click=self._controller.handle_hello)
-        row1 = ft.Row([self.txt_name, self.btn_hello],
-                      alignment=ft.MainAxisAlignment.CENTER)
-        self._page.controls.append(row1)
+        self.bottone2 = ft.ElevatedButton(
+            text="Analizza Vendite",
+            icon=ft.icons.SEARCH,
+            style=ft.ButtonStyle(
+                color=ft.colors.WHITE,
+                bgcolor=ft.colors.BLUE_700,
+                overlay_color=ft.colors.BLUE_900,
+                padding=20,
+                shape=ft.RoundedRectangleBorder(radius=12),
+                elevation=6,
+            ),
+            on_click=self._controller.handle_analizzaVendite
+        )
 
+        row1 = ft.Row([self.dropdown1, self.dropdown2, self.dropdown3],
+                      alignment=ft.MainAxisAlignment.CENTER, expand=True)
+
+        row2 = ft.Row([self.bottone1, self.bottone2],
+                      alignment=ft.MainAxisAlignment.CENTER, expand=True)
+
+        self._page.controls.append(row1)
+        self._page.controls.append(row2)
+        self._controller.populate_dropdown3()
         # List View where the reply is printed
-        self.txt_result = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
+        self.txt_result = ft.ListView(expand=1, spacing=10, padding=0, auto_scroll=True)
         self._page.controls.append(self.txt_result)
         self._page.update()
 
@@ -61,3 +109,4 @@ class View(ft.UserControl):
 
     def update_page(self):
         self._page.update()
+
